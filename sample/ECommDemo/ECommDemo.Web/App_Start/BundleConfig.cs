@@ -35,6 +35,14 @@ namespace ECommDemo.Web
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+			// SignalR and Knockout
+			bundles.Add(new ScriptBundle("~/bundles/signalr").Include(
+						"~/Scripts/jquery.signalR-0.5.1.*",
+						"~/signalr/hubs"));
+
+			bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
+						"~/Scripts/knockout*"));
         }
     }
 }

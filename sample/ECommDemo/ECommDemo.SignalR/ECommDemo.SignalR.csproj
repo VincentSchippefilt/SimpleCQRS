@@ -5,22 +5,21 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{201A4DF5-2217-4202-80E8-E784737366BC}</ProjectGuid>
+    <ProjectGuid>{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimpleCqrs.EventStore.MongoDb</RootNamespace>
-    <AssemblyName>SimpleCqrs.EventStore.MongoDb</AssemblyName>
+    <RootNamespace>ECommDemo.SignalR</RootNamespace>
+    <AssemblyName>ECommDemo.SignalR</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\binaries\eventstores\mongodb\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,28 +33,48 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\..\sample\ECommDemo\packages\mongocsharpdriver.1.4.2\lib\net35\MongoDB.Bson.dll</HintPath>
+    <Reference Include="Castle.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\..\sample\ECommDemo\packages\mongocsharpdriver.1.4.2\lib\net35\MongoDB.Driver.dll</HintPath>
+    <Reference Include="Castle.Windsor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.3.0.0.4001\lib\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SignalR">
+      <HintPath>..\packages\SignalR.Server.0.5.1.1\lib\net40\SignalR.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MongoEventStore.cs" />
-    <Compile Include="MongoSnapshotStore.cs" />
+    <Compile Include="CatalogHub.cs" />
+    <Compile Include="CastleWindsorDependencyResolver.cs" />
+    <Compile Include="HubsInstallers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SimpleCqrs\SimpleCqrs.csproj">
+    <ProjectReference Include="..\..\..\src\SimpleCqrs\SimpleCqrs.csproj">
       <Project>{E04C12B5-A6D3-4D64-9F38-896BEE68162E}</Project>
       <Name>SimpleCqrs %28SimpleCQRS\SimpleCqrs%29</Name>
-      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ECommDemo.Commanding\ECommDemo.Commanding.csproj">
+      <Project>{9EAD889F-AC1D-4FB7-AAD9-5FC3F5E6CE0B}</Project>
+      <Name>ECommDemo.Commanding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ECommDemo.Domain\ECommDemo.Domain.csproj">
+      <Project>{7A0D79F7-444B-48B1-993F-5818E60C5FCE}</Project>
+      <Name>ECommDemo.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ECommDemo.ReadModel\ECommDemo.ViewModel.csproj">
+      <Project>{E1E395CE-A421-493A-9541-A860EAEA1611}</Project>
+      <Name>ECommDemo.ViewModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

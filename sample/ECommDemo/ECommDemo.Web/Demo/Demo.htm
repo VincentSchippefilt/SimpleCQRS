@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+	<script type="text/javascript" src="../Scripts/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="../Scripts/jquery.signalR-0.5.1.js"></script>
+	<script type="text/javascript" src="../signalr/hubs"></script>
+	<script type="text/javascript" src="../Scripts/knockout-2.1.0.js"></script>
+	<script type="text/javascript" src="../Scripts/knockout.mapping-latest.js"></script>
+	<script type="text/javascript">
+		$.connection.hub.start(function () {
+			var service = $.connection.catalogHub;
+			service.echo('test').done(function (result) { alert(result); });
+			
+		});
+	</script>
+</body>
+</html>

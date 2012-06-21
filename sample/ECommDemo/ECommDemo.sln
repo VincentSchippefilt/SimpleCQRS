@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommDemo.Domain", "ECommDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommDemo.ViewModel", "ECommDemo.ReadModel\ECommDemo.ViewModel.csproj", "{E1E395CE-A421-493A-9541-A860EAEA1611}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommDemo.SignalR", "ECommDemo.SignalR\ECommDemo.SignalR.csproj", "{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{E1E395CE-A421-493A-9541-A860EAEA1611}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1E395CE-A421-493A-9541-A860EAEA1611}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1E395CE-A421-493A-9541-A860EAEA1611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F0555C8-DCE7-400C-9F68-C9A494AD34AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

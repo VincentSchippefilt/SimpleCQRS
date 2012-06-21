@@ -10,6 +10,8 @@ using Castle.Windsor;
 using ECommDemo.Domain.Support;
 using ECommDemo.ViewModel.Support;
 using ECommDemo.Web.Support;
+using SignalR;
+using ECommDemo.SignalR;
 
 namespace ECommDemo.Web
 {
@@ -23,6 +25,12 @@ namespace ECommDemo.Web
 
         protected void Application_Start()
         {
+			Container = new WindsorContainer();
+           
+			// signalR configuration: must appear before everything else
+			GlobalHost.DependencyResolver = new CastleWindsorDependencyResolver(Container);
+			RouteTable.Routes.MapHubs();
+
             AreaRegistration.RegisterAllAreas();
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -36,11 +44,11 @@ namespace ECommDemo.Web
 
         protected void SetupContainer()
         {
-            Container = new WindsorContainer();
             Container.Install(
                     new SupportInstaller(),
                     new HandlersInstaller(),
                     new DomainEventHandlersInstaller(),
+					new HubsInstallers(),
                     new ViewModelInstaller().AddReaders().AddWriters()
                 );
         
