@@ -25,7 +25,7 @@ namespace SimpleCqrs.Domain
             domainEvent.EntityId = Id;
 
             if(!((IHaveATestMode)this).IsInTestMode)
-                AggregateRoot.Apply(domainEvent);
+                AggregateRoot.RaiseEvent(domainEvent);
 
             uncommittedEvents.Enqueue(domainEvent);
             ApplyEventToInternalState(domainEvent);

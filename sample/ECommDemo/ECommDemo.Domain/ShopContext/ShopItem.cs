@@ -31,14 +31,21 @@ namespace ECommDemo.Domain.ShopContext
 
         public ShopItem(string id, string description)
         {
-            Apply(new ShopItemCreatedEvent(id, description)
+            RaiseEvent(
+                new ShopItemCreatedEvent(id, description)
                       {
                           AggregateRootId = Guid.NewGuid()
-                      });
+                      }
+             );
         }
 
-
-        protected void OnItemCreated(ShopItemCreatedEvent e)
+        /// <summary>
+        /// This use the new Applyer based on LCG, it is better then relaying on 
+        /// the convention OnEventName, that is too sensitive to domain event refactoring
+        /// during developement.
+        /// </summary>
+        /// <param name="e"></param>
+        protected void Apply(ShopItemCreatedEvent e)
         {
             this.Id = e.AggregateRootId;
             this.ItemId = e.ItemId;

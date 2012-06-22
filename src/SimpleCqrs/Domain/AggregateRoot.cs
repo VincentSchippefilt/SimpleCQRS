@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using SimpleCqrs.Eventing;
+using System.Reflection.Emit;
 
 namespace SimpleCqrs.Domain
 {
@@ -30,7 +31,7 @@ namespace SimpleCqrs.Domain
             domainEventList.ForEach(ApplyEventToInternalState);
         }
 
-        public void Apply(DomainEvent domainEvent)
+        public void RaiseEvent(DomainEvent domainEvent)
         {
             domainEvent.Sequence = ++LastEventSequence;
             ApplyEventToInternalState(domainEvent);
@@ -65,9 +66,14 @@ namespace SimpleCqrs.Domain
                                                          BindingFlags.Instance | BindingFlags.Public |
                                                          BindingFlags.NonPublic, null, new[] {domainEventType}, null);
 
-            if(methodInfo != null && EventHandlerMethodInfoHasCorrectParameter(methodInfo, domainEventType))
+            if (methodInfo != null && EventHandlerMethodInfoHasCorrectParameter(methodInfo, domainEventType))
             {
-                methodInfo.Invoke(this, new[] {domainEvent});
+                methodInfo.Invoke(this, new[] { domainEvent });
+            }
+            else 
+            { 
+                //I've not found the event with the convention, use the LCG applyer
+                applyInvokers.Invoke(this, domainEvent);
             }
 
             ApplyEventToEntities(domainEvent);
@@ -95,5 +101,71 @@ namespace SimpleCqrs.Domain
             var parameters = eventHandlerMethodInfo.GetParameters();
             return parameters.Length == 1 && parameters[0].ParameterType == domainEventType;
         }
+
+        /// <summary>
+        /// it is not thread safe for now, it is not a problem for this test.
+        /// </summary>
+        private static LcgApplyInvoker applyInvokers = new LcgApplyInvoker(); 
+
+    }
+
+    internal class LcgApplyInvoker 
+    {
+        /// <summary>
+        /// Cache of appliers, for each domain object I have a dictionary of actions
+        /// </summary>
+        private Dictionary<Type, Dictionary<Type, Action<Object, Object>>> lcgCache =
+            new Dictionary<Type, Dictionary<Type, Action<Object, Object>>>();
+
+        public void Invoke(Object obj, DomainEvent domainEvent)
+        {
+            if (!lcgCache.ContainsKey(obj.GetType()))
+            {
+                var typeCache = new Dictionary<Type, Action<Object, Object>>();
+
+                var applyMethods = obj.GetType().GetMethods(
+                    BindingFlags.NonPublic |
+                    BindingFlags.Instance);
+
+                foreach (var item in applyMethods
+                    .Where(am => am.Name.Equals("apply", StringComparison.OrdinalIgnoreCase))
+                    .Select(am => new { parameters = am.GetParameters(), minfo = am })
+                    .Where(p => p.parameters.Length == 1 &&
+                        typeof(DomainEvent).IsAssignableFrom(p.parameters[0].ParameterType)))
+                {
+                    var localItem = item;
+                    Action<Object, Object> applier = ReflectAction(obj.GetType(), item.minfo);
+                    typeCache[localItem.parameters[0].ParameterType] = applier;
+                }
+                lcgCache[obj.GetType()] = typeCache;
+
+            }
+            var thisTypeCache = lcgCache[obj.GetType()];
+            Action<Object, Object> invoker;
+            if (thisTypeCache.TryGetValue(domainEvent.GetType(), out invoker))
+            {
+                invoker(obj, domainEvent);
+            }
+
+        }
+
+        private static Action<Object, Object> ReflectAction(Type objType, MethodInfo methodinfo)
+        {
+
+            DynamicMethod retmethod = new DynamicMethod(
+                "Invoker" + methodinfo.Name,
+                (Type)null,
+                new Type[] { typeof(Object), typeof(Object) },
+                objType,
+                true); //methodinfo.GetParameters().Single().ParameterType
+            ILGenerator ilgen = retmethod.GetILGenerator();
+            ilgen.Emit(OpCodes.Ldarg_0);
+            ilgen.Emit(OpCodes.Castclass, objType);
+            ilgen.Emit(OpCodes.Ldarg_1);
+            ilgen.Emit(OpCodes.Callvirt, methodinfo);
+            ilgen.Emit(OpCodes.Ret);
+            return (Action<Object, Object>)retmethod.CreateDelegate(typeof(Action<Object, Object>));
+        }
+
     }
 }
